@@ -10,8 +10,8 @@ export async function transcribe() {
   (async () => {
     const timestamp = Date.now();
     const transcription = await transcribeAudio(timestamp);
-    streamable.update({ transcription: transcription });
-    streamable.done({ status: "done" });
+    streamable.update(transcription);
+    streamable.done();
   })();
 
   return streamable.value;
