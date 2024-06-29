@@ -1,18 +1,40 @@
-import { createOpenAI } from "@ai-sdk/openai";
+"use client";
 
-import { generateText } from "ai";
-import { env } from "~/env";
+import { readStreamableValue } from "ai/rsc";
+import { useState } from "react";
+import { generate } from "~/actions/generate";
+import { transcribe } from "~/actions/transcribe";
 
-const ChatCompletion = async () => {
-  const groq = createOpenAI({
-    baseURL: "https://api.groq.com/openai/v1",
-    apiKey: env.GROQ_API_KEY,
-  });
-  const { text } = await generateText({
-    model: groq("llama3-70b-8192"),
-    prompt: "what is the fastest car? keep it under 100 words",
-  });
-  return <div className="px-20">{text}</div>;
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
+interface Message {
+  rateLimitReached: any;
+  transcription?: string;
+  audio?: string;
+  result?: string;
+  weather?: string;
+  spotify?: string;
+  time?: string;
+}
+
+const ChatCompletion = () => {
+  const [generation, setGeneration] = useState<string>("");
+
+  const doStuff = async () => {
+    const streamableValue = await transcribe();
+    for await (const message of readStreamableValue<Message>(streamableValue)) {
+      if (message?.transcription) setGeneration(message.transcription);
+    }
+  };
+
+  console.log(generation);
+  return (
+    <div>
+      <button onClick={doStuff}>Ask</button>
+
+      <div>{generation}</div>
+    </div>
+  );
 };
 
 export default ChatCompletion;

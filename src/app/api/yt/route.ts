@@ -6,12 +6,12 @@ import { LinkValidator } from "~/lib/validators/link";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const body = (await req.json()) as { body: { url: string } };
     const { url } = LinkValidator.parse(body);
 
     const audioStream = ytdl(url, {
       filter: "audioonly",
-      //   quality: "lowestaudio",
+      quality: "lowestaudio",
     });
 
     const videoMetaData = await ytdl.getBasicInfo(url);
