@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body className="dark">
-        <div className="grid h-screen grid-rows-[auto_1fr] ">
+        <div className=" relative grid h-screen grid-rows-[auto_1fr] overflow-x-hidden">
           <Meteors number={30} />
           <Particles
             className="absolute inset-0"
