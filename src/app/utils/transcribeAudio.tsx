@@ -10,19 +10,21 @@ const groq = new Groq({
 
 export const transcribeAudio = traceable(
   async (timestamp: number) => {
-    const filePath = "/tmp/audio.wav";
+    const filePath = "/tmp/audio.webm";
     const fileData = fs.readFileSync(filePath);
-    const blob = new Blob([fileData], { type: "audio/wav" });
+    const blob = new Blob([fileData], { type: "audio/webm" });
     if (!(blob instanceof Blob)) throw new Error("No audio detected");
+    console.log(blob.size);
 
     try {
       const transcription = await groq?.audio?.transcriptions?.create({
-        file: await toFile(blob, `audio-${timestamp}.wav`),
+        file: await toFile(blob, "audio.webm"),
         model: "whisper-large-v3",
       });
+      console.log(transcription);
       return transcription?.text;
     } catch (error) {
-      console.error("Error transcribing audio:", error);
+      console.log("Error transcribing audio:", error);
       return "Error transcribing audio. Please try again later.";
     }
   },

@@ -3,27 +3,36 @@
 import { readStreamableValue } from "ai/rsc";
 import { useState } from "react";
 import { transcribe } from "~/actions/transcribe";
+import ShineBorder from "../magicui/shine-border";
+import InputForm from "./InputForm";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
 const ChatCompletion = () => {
   const [generation, setGeneration] = useState<string>("");
+  const [transcription, setTranscription] = useState<string>("");
 
   const doStuff = async () => {
     const streamableValue = await transcribe();
     for await (const message of readStreamableValue<string>(streamableValue)) {
-      if (message) setGeneration(message);
+      if (message) setTranscription(message);
+      console.log(message);
     }
   };
 
-  console.log(generation);
   return (
-    <div>
-      <button onClick={doStuff}>Ask</button>
+    <ShineBorder
+      className="p-10 text-2xl font-bold capitalize shadow-sm"
+      color={"white"}
+    >
+      <div className="z-10">
+        {/* <Button onClick={doStuff}>Ask</Button> */}
+        <InputForm setGeneration={setGeneration} />
 
-      <div>{generation}</div>
-    </div>
+        <div>{transcription}</div>
+      </div>
+    </ShineBorder>
   );
 };
 

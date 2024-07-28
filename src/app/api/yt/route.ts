@@ -11,19 +11,18 @@ export async function POST(req: Request) {
 
     const audioStream = ytdl(url, {
       filter: "audioonly",
-      quality: "lowestaudio",
     });
 
     const videoMetaData = await ytdl.getBasicInfo(url);
     console.log(videoMetaData);
-    const audioPath = path.join("/tmp", "audio.wav");
+    const audioPath = path.join("/tmp", "audio.mp4");
     const audioFile = fs.createWriteStream(audioPath);
     audioStream.pipe(audioFile);
     audioFile.on("finish", () => {
       console.log("Audio file downloaded successfully");
     });
 
-    return new Response("OK");
+    return new Response("ok");
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response("Invalid URL passed", { status: 422 });
